@@ -1,0 +1,2 @@
+src/components/challenges/ChallengeList.tsx(1,18): error TS6133: 'Filter' is declared but its value is never read.
+src/components/pilots/PilotManagement.tsx(12,26): error TS6133: 'setStatusFilter' is declared but its value is never read.

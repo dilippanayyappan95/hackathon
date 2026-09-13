@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-on-surface font-sans antialiased selection:bg-primary-fixed-dim selection:text-on-primary-fixed;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-on-surface tracking-tight;
+  }
+}
+
+@layer utilities {
+  .shadow-level-2 {
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  }
+  .shadow-level-3 {
+    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+  }
+  .shadow-level-4 {
+    box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+  }
+  .focus-ring {
+    box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2563EB;
+  }
+}
