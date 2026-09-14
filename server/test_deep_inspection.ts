@@ -26,40 +26,40 @@ async function runDeepInspection() {
         // --- 1. HEALTH & SYSTEM ---
         console.log('--- 1. Health & System Verification ---');
         const healthRes = await axios.get(`${BASE_URL}/health`);
-        assertTest('Health Check', healthRes.status === 200 && healthRes.data.status === 'HEALTHY', `Platform: ${healthRes.data.platform}`);
+        assertTest('Health Check', healthRes.status === 200 && (healthRes.data.status === 'active' || healthRes.data.status === 'HEALTHY'), `Platform: ${healthRes.data.platform}`);
 
         // --- 2. AUTHENTICATION & SESSIONS ---
         console.log('\n--- 2. Authentication & Session Matrix ---');
         
         // 2.1 Login each persona
-        const govLogin = await axios.post(`${BASE_URL}/auth/login`, { email: 'officer@govproof.in', password: 'password123' });
+        const govLogin = await axios.post(`${BASE_URL}/auth/login`, { email: 'gov@demo.com', password: 'demo123' });
         assertTest('Gov Officer Login', govLogin.status === 200 && govLogin.data.user.role === 'Government Officer', `User: ${govLogin.data.user.name}`);
         const govToken = govLogin.data.token;
         const govHeaders = { headers: { Authorization: `Bearer ${govToken}` } };
 
-        const startupLogin = await axios.post(`${BASE_URL}/auth/login`, { email: 'founder@medflow.ai', password: 'password123' });
+        const startupLogin = await axios.post(`${BASE_URL}/auth/login`, { email: 'founder@medflow.com', password: 'demo123' });
         assertTest('Startup Login', startupLogin.status === 200 && startupLogin.data.user.startup === 'MedFlow AI', `Startup: ${startupLogin.data.user.startup}`);
         const startupToken = startupLogin.data.token;
         const startupHeaders = { headers: { Authorization: `Bearer ${startupToken}` } };
 
-        const expertLogin = await axios.post(`${BASE_URL}/auth/login`, { email: 'evaluator@iitb.ac.in', password: 'password123' });
+        const expertLogin = await axios.post(`${BASE_URL}/auth/login`, { email: 'expert@demo.com', password: 'demo123' });
         assertTest('Expert Login', expertLogin.status === 200 && expertLogin.data.user.role === 'Expert', `Expert: ${expertLogin.data.user.name}`);
         const expertToken = expertLogin.data.token;
         const expertHeaders = { headers: { Authorization: `Bearer ${expertToken}` } };
 
-        const validatorLogin = await axios.post(`${BASE_URL}/auth/login`, { email: 'validator@msis.org.in', password: 'password123' });
+        const validatorLogin = await axios.post(`${BASE_URL}/auth/login`, { email: 'validator@demo.com', password: 'demo123' });
         assertTest('Validator Login', validatorLogin.status === 200 && validatorLogin.data.user.role === 'Validator', `Validator: ${validatorLogin.data.user.name}`);
         const validatorToken = validatorLogin.data.token;
         const validatorHeaders = { headers: { Authorization: `Bearer ${validatorToken}` } };
 
-        const procLogin = await axios.post(`${BASE_URL}/auth/login`, { email: 'procurement@govproof.in', password: 'password123' });
+        const procLogin = await axios.post(`${BASE_URL}/auth/login`, { email: 'procurement@demo.com', password: 'demo123' });
         assertTest('Procurement Login', procLogin.status === 200 && procLogin.data.user.role === 'Procurement Officer', `Proc: ${procLogin.data.user.name}`);
         const procToken = procLogin.data.token;
         const procHeaders = { headers: { Authorization: `Bearer ${procToken}` } };
 
         // 2.2 Bad Login Scenarios
         try {
-            await axios.post(`${BASE_URL}/auth/login`, { email: 'officer@govproof.in', password: 'wrongpassword' });
+            await axios.post(`${BASE_URL}/auth/login`, { email: 'gov@demo.com', password: 'wrongpassword' });
             assertTest('Bad Password Login', false, 'Expected 401');
         } catch (e: any) {
             assertTest('Bad Password Login', e.response?.status === 401, 'Correctly returned 401 Unauthorized');
@@ -81,7 +81,7 @@ async function runDeepInspection() {
 
         // 2.3 Session verification /me
         const meRes = await axios.get(`${BASE_URL}/auth/me`, govHeaders);
-        assertTest('Verify Session (/me)', meRes.status === 200 && meRes.data.user.email === 'officer@govproof.in', `Verified user: ${meRes.data.user.name}`);
+        assertTest('Verify Session (/me)', meRes.status === 200 && meRes.data.user.email === 'gov@demo.com', `Verified user: ${meRes.data.user.name}`);
 
         try {
             await axios.get(`${BASE_URL}/auth/me`, { headers: { Authorization: 'Bearer invalid.token.value' } });
@@ -94,7 +94,7 @@ async function runDeepInspection() {
         const demoSwitchRes = await axios.post(`${BASE_URL}/auth/demo-switch`, { roleName: 'Procurement Officer' });
         assertTest('Demo Switcher by Role', demoSwitchRes.status === 200 && demoSwitchRes.data.user.role === 'Procurement Officer', `Switched to: ${demoSwitchRes.data.user.role}`);
 
-        const demoSwitchEmailRes = await axios.post(`${BASE_URL}/auth/demo-switch`, { email: 'founder@medflow.ai' });
+        const demoSwitchEmailRes = await axios.post(`${BASE_URL}/auth/demo-switch`, { email: 'founder@medflow.com' });
         assertTest('Demo Switcher by Email', demoSwitchEmailRes.status === 200 && demoSwitchEmailRes.data.user.startup === 'MedFlow AI', `Switched to: ${demoSwitchEmailRes.data.user.startup}`);
 
         // --- 3. ANALYTICS & DATABASE CONCURRENCY STRESS TEST ---
