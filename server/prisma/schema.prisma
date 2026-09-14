@@ -25,16 +25,21 @@ model Department {
 }
 
 model Startup {
-  id           String            @id @default(uuid())
-  name         String
-  description  String?
-  domain       String?
-  technology   String?
-  users        User[]
-  documents    StartupDocument[]
-  applications Application[]
-  pilots       PilotProject[]
-  createdAt    DateTime          @default(now())
+  id               String            @id @default(uuid())
+  name             String
+  description      String?
+  domain           String?
+  technology       String?
+  capabilities     String?           // Comma-separated or description of core capabilities
+  experience       String?           // Track record summary
+  dpiitNumber      String?
+  foundedYear      Int?
+  stage            String?           // Early Stage, Seed, Growth, Series A
+  users            User[]
+  documents        StartupDocument[]
+  applications     Application[]
+  pilots           PilotProject[]
+  createdAt        DateTime          @default(now())
 }
 
 model User {
@@ -69,24 +74,35 @@ model StartupDocument {
 }
 
 model Challenge {
-  id           String                 @id @default(uuid())
-  departmentId String
-  department   Department             @relation(fields: [departmentId], references: [id])
-  title        String
-  description  String
-  targetValue  String?
-  status       String // Draft, Published, Closed
-  requirements ChallengeRequirement[]
-  kpis         ChallengeKPI[]
-  applications Application[]
-  pilots       PilotProject[]
-  createdAt    DateTime               @default(now())
+  id                   String                 @id @default(uuid())
+  departmentId         String
+  department           Department             @relation(fields: [departmentId], references: [id])
+  title                String
+  problemStatement     String?
+  description          String
+  category             String?                // e.g. Healthcare, Waste Management, Smart Infrastructure
+  location             String?
+  budget               String?                // e.g. ₹25,00,000
+  timeline             String?                // e.g. 6 Months
+  targetValue          String?                // e.g. 20% reduction
+  baselineValue        String?                // e.g. 135 minutes or ₹12L/month
+  requiredCapabilities String?                // JSON or semicolon-separated capabilities
+  eligibilityCriteria  String?                // JSON or text
+  expectedOutcomes     String?                // Desired impact
+  evaluationCriteria   String?                // Criteria definitions
+  status               String                 // DRAFT, PUBLISHED, UNDER_EVALUATION, PILOT, COMPLETED, CLOSED
+  requirements         ChallengeRequirement[]
+  kpis                 ChallengeKPI[]
+  applications         Application[]
+  pilots               PilotProject[]
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @default(now()) @updatedAt
 }
 
 model ChallengeRequirement {
   id          String    @id @default(uuid())
   challengeId String
-  challenge   Challenge @relation(fields: [challengeId], references: [id])
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   description String
   isMandatory Boolean   @default(true)
 }
@@ -94,29 +110,36 @@ model ChallengeRequirement {
 model ChallengeKPI {
   id          String    @id @default(uuid())
   challengeId String
-  challenge   Challenge @relation(fields: [challengeId], references: [id])
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   name        String
-  metric      String
+  metric      String?
+  baseline    String?
   target      String
+  unit        String?
 }
 
 model Application {
-  id          String                @id @default(uuid())
-  challengeId String
-  challenge   Challenge             @relation(fields: [challengeId], references: [id])
-  startupId   String
-  startup     Startup               @relation(fields: [startupId], references: [id])
-  status      String // Applied, Shortlisted, Selected, Rejected
-  documents   ApplicationDocument[]
-  evaluations Evaluation[]
-  pilots      PilotProject[]
-  createdAt   DateTime              @default(now())
+  id               String                @id @default(uuid())
+  challengeId      String
+  challenge        Challenge             @relation(fields: [challengeId], references: [id])
+  startupId        String
+  startup          Startup               @relation(fields: [startupId], references: [id])
+  solutionSummary  String?
+  proposedBudget   String?
+  proposedTimeline String?
+  status           String                // SUBMITTED, ELIGIBILITY_REVIEW, ELIGIBLE, INELIGIBLE, SHORTLISTED, UNDER_EVALUATION, SELECTED, REJECTED
+  rejectionReason  String?
+  documents        ApplicationDocument[]
+  evaluations      Evaluation[]
+  pilots           PilotProject[]
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @default(now()) @updatedAt
 }
 
 model ApplicationDocument {
   id            String      @id @default(uuid())
   applicationId String
-  application   Application @relation(fields: [applicationId], references: [id])
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   name          String
   fileUrl       String
   createdAt     DateTime    @default(now())
@@ -128,19 +151,22 @@ model Evaluation {
   application        Application       @relation(fields: [applicationId], references: [id])
   expertId           String
   expert             User              @relation(fields: [expertId], references: [id])
-  status             String // Pending, Submitted
+  status             String            // PENDING, SUBMITTED
   overallScore       Float?
+  comments           String?
   declaredNoConflict Boolean           @default(false)
   scores             EvaluationScore[]
   createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @default(now()) @updatedAt
 }
 
 model EvaluationScore {
   id           String     @id @default(uuid())
   evaluationId String
-  evaluation   Evaluation @relation(fields: [evaluationId], references: [id])
-  category     String
+  evaluation   Evaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  category     String     // e.g. Technical Feasibility, Problem Fit, Innovation, Scalability, Cost Effectiveness, Security
   score        Float
+  weight       Float?     // e.g. 0.25
   comments     String?
 }
 
@@ -152,12 +178,16 @@ model PilotProject {
   application   Application        @relation(fields: [applicationId], references: [id])
   startupId     String
   startup       Startup            @relation(fields: [startupId], references: [id])
-  status        String // Active, Completed, Failed
+  status        String             // PLANNED, ACTIVE, EXTENDED, COMPLETED, FAILED, CANCELLED
+  pilotLocation String?
+  startDate     DateTime?
+  endDate       DateTime?
+  objectives    String?
   baseline      String?
   target        String?
   actual        String?
-  startDate     DateTime?
-  endDate       DateTime?
+  risks         String?
+  ownerId       String?
   kpis          PilotKPI[]
   milestones    PilotMilestone[]
   payments      Payment[]
@@ -166,31 +196,39 @@ model PilotProject {
   passports     ProofPassport[]
   scaleDecision ScaleDecision?
   createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @default(now()) @updatedAt
 }
 
 model PilotKPI {
-  id       String       @id @default(uuid())
-  pilotId  String
-  pilot    PilotProject @relation(fields: [pilotId], references: [id])
-  name     String
-  baseline String?
-  target   String?
-  actual   String?
-  status   String?
-  evidence Evidence[]
+  id                String       @id @default(uuid())
+  pilotId           String
+  pilot             PilotProject @relation(fields: [pilotId], references: [id], onDelete: Cascade)
+  name              String
+  description       String?
+  unit              String?
+  baseline          String?
+  target            String?
+  actual            String?
+  measurementPeriod String?
+  source            String?      // e.g. IoT Telemetry, Hospital HIS, Municipal ERP
+  status            String?      // ON_TRACK, AT_RISK, ACHIEVED, MISSED
+  evidence          Evidence[]
 }
 
 model PilotMilestone {
-  id          String       @id @default(uuid())
-  pilotId     String
-  pilot       PilotProject @relation(fields: [pilotId], references: [id])
-  title       String
-  dueDate     DateTime?
-  amount      Float?
-  status      String // Pending, Submitted, Approved, Paid
-  deliverable String?
-  payments    Payment[]
-  evidence    Evidence[]
+  id                  String       @id @default(uuid())
+  pilotId             String
+  pilot               PilotProject @relation(fields: [pilotId], references: [id], onDelete: Cascade)
+  title               String
+  description         String?
+  dueDate             DateTime?
+  completionDate      DateTime?
+  amount              Float?
+  status              String       // PENDING, IN_PROGRESS, COMPLETED, DELAYED, FAILED
+  deliverable         String?
+  evidenceRequirement String?
+  payments            Payment[]
+  evidence            Evidence[]
 }
 
 model Payment {
@@ -200,8 +238,10 @@ model Payment {
   milestoneId String?
   milestone   PilotMilestone? @relation(fields: [milestoneId], references: [id])
   amount      Float
-  status      String // Pending, Processed, Paid
-  date        DateTime?
+  status      String          // PENDING, APPROVED, PROCESSING, PAID, REJECTED
+  dueDate     DateTime?
+  paymentDate DateTime?
+  createdAt   DateTime        @default(now())
 }
 
 model Evidence {
@@ -212,12 +252,17 @@ model Evidence {
   milestone      PilotMilestone? @relation(fields: [milestoneId], references: [id])
   kpiId          String?
   kpi            PilotKPI?       @relation(fields: [kpiId], references: [id])
+  title          String?
+  description    String?
   uploadedById   String
   uploadedBy     User            @relation(fields: [uploadedById], references: [id])
   fileUrl        String
-  fileType       String
-  verifiedStatus String // Pending, Verified, Rejected
+  fileType       String          // PDF, CSV, Telemetry Log, Image
+  verifiedStatus String          // SUBMITTED, UNDER_REVIEW, VERIFIED, REJECTED
+  reviewComments String?
+  reviewerId     String?
   createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @default(now()) @updatedAt
 }
 
 model ValidationRecord {
@@ -226,45 +271,59 @@ model ValidationRecord {
   pilot       PilotProject @relation(fields: [pilotId], references: [id])
   validatorId String
   validator   User         @relation(fields: [validatorId], references: [id])
-  decision    String // Verify, Partially Verify, Reject
+  decision    String       // PENDING, IN_REVIEW, VALIDATED, PARTIALLY_VALIDATED, REJECTED
+  methodology String?      // Verification method used
+  findings    String?      // Detailed findings & statistical audit notes
+  confidence  String?      // High, Medium, Low
   comments    String?
   timestamp   DateTime     @default(now())
 }
 
 model ProofPassport {
-  id            String       @id @default(uuid())
-  pilotId       String
-  pilot         PilotProject @relation(fields: [pilotId], references: [id])
-  generatedDate DateTime     @default(now())
-  dataSnapshot  String       // JSON stringified snapshot
+  id             String       @id @default(uuid())
+  pilotId        String
+  pilot          PilotProject @relation(fields: [pilotId], references: [id])
+  passportNumber String?      @unique // e.g. GPP-MH-2026-0042
+  auditHash      String?      // SHA-256 hash
+  generatedDate  DateTime     @default(now())
+  dataSnapshot   String       // Complete JSON snapshot
 }
 
 model ScaleDecision {
-  id             String               @id @default(uuid())
-  pilotId        String               @unique
-  pilot          PilotProject         @relation(fields: [pilotId], references: [id])
+  id             String             @id @default(uuid())
+  pilotId        String             @unique
+  pilot          PilotProject       @relation(fields: [pilotId], references: [id])
   decisionById   String
-  decisionBy     User                 @relation(fields: [decisionById], references: [id])
-  recommendation String // SCALE, EXTEND PILOT, DO NOT SCALE
-  finalDecision  String
-  createdAt      DateTime             @default(now())
+  decisionBy     User               @relation(fields: [decisionById], references: [id])
+  recommendation String             // STOP, IMPROVE, EXTEND PILOT, PROCEED TO PROCUREMENT, SCALE
+  finalDecision  String             // Official determination
+  reason         String?
+  comments       String?
+  readinessScore Float?
+  createdAt      DateTime           @default(now())
   procurement    ProcurementRecord?
 }
 
 model ProcurementRecord {
-  id              String        @id @default(uuid())
-  scaleDecisionId String        @unique
-  scaleDecision   ScaleDecision @relation(fields: [scaleDecisionId], references: [id])
-  tenderDocUrl    String?
-  status          String
-  createdAt       DateTime      @default(now())
+  id                        String        @id @default(uuid())
+  scaleDecisionId           String        @unique
+  scaleDecision             ScaleDecision @relation(fields: [scaleDecisionId], references: [id])
+  tenderDocUrl              String?
+  status                    String        // NOT READY, READY FOR REVIEW, PROCUREMENT READY
+  specifications            String?       // JSON specifications derived from Proof Passport
+  contractReadiness         String?       // READY, PENDING_LEGAL, NOT_READY
+  documentationCompleteness String?       // COMPLETE, PARTIAL, MISSING
+  securityReadiness         String?       // CERTIFIED, UNDER_REVIEW
+  riskStatus                String?       // LOW, MEDIUM, HIGH
+  createdAt                 DateTime      @default(now())
 }
 
 model Template {
-  id      String @id @default(uuid())
-  name    String
-  type    String // e.g. TENDER_DOC, EMAIL
-  content String
+  id        String   @id @default(uuid())
+  name      String
+  type      String   // e.g. TENDER_DOC, EMAIL, COMPLIANCE_CHECKLIST
+  content   String
+  createdAt DateTime @default(now())
 }
 
 model Risk {
@@ -274,6 +333,7 @@ model Risk {
   reportedById String
   severity     String   // High, Medium, Low
   description  String
+  mitigation   String?
   status       String   // Open, Mitigated
   createdAt    DateTime @default(now())
 }
@@ -283,6 +343,7 @@ model Notification {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   message   String
+  link      String?
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
@@ -293,6 +354,7 @@ model AuditLog {
   user      User?    @relation(fields: [userId], references: [id])
   action    String
   entity    String
+  entityId  String?
   details   String?  // JSON string
   timestamp DateTime @default(now())
 }

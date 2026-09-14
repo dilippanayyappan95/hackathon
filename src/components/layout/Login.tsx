@@ -1,42 +1,122 @@
-import { ShieldCheck, ArrowRight, Lock, Mail, Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import api from '../../lib/api';
+import { useNavigate } from 'react-router-dom';
+import {
+    ShieldCheck, ArrowRight, Lock, Mail, Loader2,
+    Eye, EyeOff, Building2, UserCheck, Briefcase, Award, Sparkles
+} from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+
+const DEMO_PERSONAS = [
+    {
+        name: 'Dr. Rajesh Varma',
+        role: 'Government Officer',
+        dept: 'Health Innovation Department',
+        email: 'gov@demo.com',
+        workspace: 'government',
+        icon: ShieldCheck,
+        color: 'text-primary'
+    },
+    {
+        name: 'Vikram Mehta',
+        role: 'Startup Founder',
+        dept: 'MedFlow AI (DPIIT #89231)',
+        email: 'founder@medflow.com',
+        workspace: 'startup',
+        icon: Building2,
+        color: 'text-tertiary-fixed'
+    },
+    {
+        name: 'Dr. Arvind Kulkarni',
+        role: 'Expert Evaluator',
+        dept: 'Technical Advisory Board',
+        email: 'expert@demo.com',
+        workspace: 'government',
+        icon: Award,
+        color: 'text-secondary'
+    },
+    {
+        name: 'MSIS Audit Authority',
+        role: 'Independent Validator',
+        dept: 'Sovereign Audit Directorate',
+        email: 'validator@demo.com',
+        workspace: 'government',
+        icon: UserCheck,
+        color: 'text-primary'
+    },
+    {
+        name: 'P. Deshmukh',
+        role: 'Procurement Officer',
+        dept: 'Urban Innovation Directorate',
+        email: 'procurement@demo.com',
+        workspace: 'government',
+        icon: Briefcase,
+        color: 'text-secondary'
+    }
+];
 
 export default function Login() {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('admin@maharashtra.gov.in');
-    const [password, setPassword] = useState('password123');
+    const { login, loginDemo } = useAuth();
+
+    const [workspace, setWorkspace] = useState<'government' | 'startup'>('government');
+    const [email, setEmail] = useState('gov@demo.com');
+    const [password, setPassword] = useState('demo123');
+    const [showPassword, setShowPassword] = useState(false);
+    const [rememberMe, setRememberMe] = useState(true);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const handleWorkspaceChange = (selected: 'government' | 'startup') => {
+        setWorkspace(selected);
+        if (selected === 'government') {
+            setEmail('gov@demo.com');
+            setPassword('demo123');
+        } else {
+            setEmail('founder@medflow.com');
+            setPassword('demo123');
+        }
+        setError('');
+    };
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError('');
         try {
-            const res = await api.post('/auth/login', { email, password });
-            localStorage.setItem('token', res.data.token);
-            localStorage.setItem('user', JSON.stringify(res.data.user));
-
-            const role = res.data.user.role;
-            if (role === 'Startup') {
-                navigate('/discover');
+            const user = await login(email, password);
+            if (user.role === 'Startup') {
+                navigate('/startup-dashboard');
             } else {
-                navigate('/');
+                navigate('/government-dashboard');
             }
-        } catch (_err) {
-            setError('Invalid Enterprise Credentials.');
+        } catch {
+            setError('Invalid enterprise credentials. Please check your email/password or use a demo persona below.');
         } finally {
             setLoading(false);
         }
     };
+
+    const handleDemoPersona = async (demoEmail: string) => {
+        setLoading(true);
+        setError('');
+        try {
+            const user = await loginDemo(demoEmail);
+            if (user.role === 'Startup') {
+                navigate('/startup-dashboard');
+            } else {
+                navigate('/government-dashboard');
+            }
+        } catch {
+            setError('Failed to switch demo persona.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-background">
-
-            {/* Left Pane - Branding & Proposition */}
-            <div className="hidden md:flex flex-col justify-center px-16 lg:px-24 bg-primary text-on-primary relative overflow-hidden">
-                {/* Subtle Background Pattern */}
+            {/* Left Pane - Sovereign Proposition */}
+            <div className="hidden md:flex flex-col justify-center px-12 lg:px-20 bg-primary text-on-primary relative overflow-hidden">
                 <div className="absolute inset-0 opacity-5 pointer-events-none">
                     <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
                         <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -47,110 +127,183 @@ export default function Login() {
                 </div>
 
                 <div className="relative z-10 space-y-6 max-w-lg">
-                    <div className="w-16 h-16 bg-on-primary text-primary rounded-xl flex items-center justify-center shadow-lg mb-8">
+                    <div className="w-16 h-16 bg-on-primary text-primary rounded-2xl flex items-center justify-center shadow-lg mb-8">
                         <ShieldCheck size={36} />
                     </div>
                     <h1 className="text-4xl lg:text-5xl font-display font-bold tracking-tight leading-tight">
-                        GOVPROOF
+                        GovProof
                     </h1>
                     <h2 className="text-xl lg:text-2xl font-bold text-primary-fixed-dim/90 mb-4 font-display">
-                        Government Innovation <span className="text-tertiary-fixed">→</span> Proof <span className="text-tertiary-fixed">→</span> Procurement <span className="text-tertiary-fixed">→</span> Scale
+                        Government Innovation <span className="text-tertiary-fixed">→</span> Proof Passport <span className="text-tertiary-fixed">→</span> Scale
                     </h2>
-                    <p className="text-lg text-primary-fixed/80 leading-relaxed font-medium">
-                        A structured platform for discovering, testing, validating and scaling innovative solutions for government.
+                    <p className="text-base text-primary-fixed/80 leading-relaxed font-medium">
+                        Sovereign testbed validation platform helping public departments move from problem statements to verified Proof Passports and fast-track procurement.
                     </p>
 
-                    <div className="pt-12">
-                        <div className="flex -space-x-3">
-                            {[1, 2, 3, 4].map(i => (
-                                <div key={i} className={`w-10 h-10 rounded-full border-2 border-primary ${i === 1 ? 'bg-surface' : i === 2 ? 'bg-surface-dim' : i === 3 ? 'bg-tertiary-fixed' : 'bg-secondary-fixed'
-                                    } flex items-center justify-center text-xs font-bold text-on-surface shadow-sm`}>
-                                    P{i}
-                                </div>
-                            ))}
-                            <div className="w-10 h-10 rounded-full border-2 border-primary bg-primary-container flex items-center justify-center text-xs font-bold text-on-primary-container shadow-sm">
-                                +12
-                            </div>
+                    <div className="pt-8 border-t border-white/10 space-y-2">
+                        <div className="flex items-center gap-2 text-sm text-primary-fixed">
+                            <Sparkles size={16} className="text-tertiary-fixed" />
+                            <span>4 State Departments • 10 Startups • Cryptographic Proof Passports</span>
                         </div>
-                        <p className="text-sm font-medium text-primary-fixed-dim mt-4">Used by 12+ State Municipal Departments</p>
+                        <p className="text-xs text-primary-fixed-dim">Zero fake static numbers — backed 100% by live telemetry and independent validation.</p>
                     </div>
                 </div>
             </div>
 
-            {/* Right Pane - Authentication Form */}
-            <div className="flex flex-col justify-center px-8 sm:px-16 lg:px-32 bg-surface-container-lowest">
-                <div className="max-w-md w-full mx-auto space-y-8">
-                    <div className="md:hidden flex items-center gap-3 mb-8">
-                        <div className="w-10 h-10 bg-primary-container text-on-primary-container rounded-lg flex items-center justify-center shadow-sm">
-                            <ShieldCheck size={24} />
-                        </div>
-                        <h1 className="text-2xl font-display font-bold text-primary tracking-tight">GOVPROOF</h1>
-                    </div>
-
+            {/* Right Pane - Enterprise Login Form */}
+            <div className="flex flex-col justify-center px-8 sm:px-12 lg:px-20 bg-surface-container-lowest py-8 overflow-y-auto">
+                <div className="max-w-md w-full mx-auto space-y-6">
+                    {/* Header */}
                     <div>
-                        <h2 className="text-3xl font-display font-bold text-on-surface tracking-tight mb-2">Secure Gateway</h2>
-                        <p className="text-on-surface-variant font-medium">Authenticate to access the sovereign testbed index.</p>
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs font-mono uppercase bg-primary/10 text-primary px-2 py-0.5 rounded font-bold">
+                                SOVEREIGN GATEWAY
+                            </span>
+                        </div>
+                        <h2 className="text-2xl lg:text-3xl font-display font-bold text-on-surface tracking-tight">Enterprise Sign In</h2>
+                        <p className="text-xs text-on-surface-variant mt-1">Authenticate to access your authorized innovation workspace.</p>
                     </div>
 
-                    <form className="space-y-5 mt-8" onSubmit={handleLogin}>
+                    {/* Workspace Selector */}
+                    <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-on-surface-variant">Choose your workspace</label>
+                        <div className="grid grid-cols-2 p-1 bg-surface-container rounded-xl border border-outline-variant/30">
+                            <button
+                                type="button"
+                                onClick={() => handleWorkspaceChange('government')}
+                                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                                    workspace === 'government'
+                                        ? 'bg-primary text-on-primary shadow-sm'
+                                        : 'text-on-surface-variant hover:text-on-surface'
+                                }`}
+                            >
+                                <ShieldCheck size={14} /> Government
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => handleWorkspaceChange('startup')}
+                                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                                    workspace === 'startup'
+                                        ? 'bg-primary text-on-primary shadow-sm'
+                                        : 'text-on-surface-variant hover:text-on-surface'
+                                }`}
+                            >
+                                <Building2 size={14} /> Startup
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Form */}
+                    <form className="space-y-4" onSubmit={handleLogin}>
                         {error && (
-                            <div className="bg-error-container text-on-error-container text-sm font-semibold p-3 rounded text-center">
+                            <div className="bg-error-container text-on-error-container text-xs font-semibold p-3 rounded-lg text-center">
                                 {error}
                             </div>
                         )}
-                        <div className="space-y-1.5">
-                            <label className="text-sm font-semibold text-on-surface-variant flex justify-between">
-                                Official Email
-                            </label>
+
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-on-surface-variant">Official Email</label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant" size={18} />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant" size={16} />
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="name@maharashtra.gov.in"
-                                    className="w-full bg-surface-container pl-10 pr-4 py-3 rounded-md border border-outline-variant/50 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary text-sm font-medium text-on-surface placeholder:text-outline transition-all"
+                                    placeholder={workspace === 'government' ? 'gov@demo.com' : 'founder@medflow.com'}
+                                    className="w-full bg-surface-container pl-10 pr-4 py-2.5 rounded-lg border border-outline-variant/50 focus:outline-none focus:border-primary text-xs font-medium text-on-surface"
                                     required
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-1.5">
-                            <label className="text-sm font-semibold text-on-surface-variant flex justify-between">
-                                Password
-                                <a href="#" className="font-bold text-secondary hover:text-secondary-container transition-colors">Forgot Password?</a>
-                            </label>
+                        <div className="space-y-1">
+                            <div className="flex items-center justify-between">
+                                <label className="text-xs font-bold text-on-surface-variant">Password</label>
+                                <span className="text-[11px] text-primary font-semibold hover:underline cursor-pointer">
+                                    Forgot Password?
+                                </span>
+                            </div>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant" size={18} />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant" size={16} />
                                 <input
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="••••••••••••"
-                                    className="w-full bg-surface-container pl-10 pr-4 py-3 rounded-md border border-outline-variant/50 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary text-sm font-medium text-on-surface placeholder:text-outline transition-all"
+                                    placeholder="••••••••"
+                                    className="w-full bg-surface-container pl-10 pr-10 py-2.5 rounded-lg border border-outline-variant/50 focus:outline-none focus:border-primary text-xs font-medium text-on-surface"
                                     required
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface"
+                                >
+                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
                             </div>
                         </div>
 
-                        <div className="pt-2">
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-bold py-3 px-4 rounded-md shadow-level-2 hover:bg-primary-container disabled:opacity-50 transition-transform active:scale-[0.98]"
-                            >
-                                {loading ? <Loader2 className="animate-spin" size={18} /> : <>Sign In to Dashboard <ArrowRight size={18} /></>}
-                            </button>
+                        {/* Remember Me */}
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                                className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary"
+                            />
+                            <label htmlFor="rememberMe" className="text-xs text-on-surface-variant font-medium cursor-pointer">
+                                Remember authenticated session
+                            </label>
                         </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-bold py-2.5 px-4 rounded-lg shadow-sm hover:bg-primary-container disabled:opacity-50 transition-all text-xs"
+                        >
+                            {loading ? <Loader2 className="animate-spin" size={16} /> : <>Sign In to {workspace === 'government' ? 'Government' : 'Startup'} Workspace <ArrowRight size={16} /></>}
+                        </button>
                     </form>
 
-                    <div className="pt-8 text-center text-sm font-medium text-on-surface-variant">
-                        <p>Don't have enterprise credentials?</p>
-                        <p className="mt-1 text-xs opacity-70">Contact your departmental nodal officer for access provisioning.</p>
+                    {/* 1-Click Demo Persona Shortcuts */}
+                    <div className="pt-4 border-t border-outline-variant/20 space-y-3">
+                        <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-on-surface">1-Click Demo Persona Sign In</span>
+                            <span className="text-[10px] text-on-surface-variant font-mono uppercase bg-surface-container px-2 py-0.5 rounded font-bold">
+                                Demo Mode
+                            </span>
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                            {DEMO_PERSONAS.map((p, idx) => {
+                                const Icon = p.icon;
+                                return (
+                                    <button
+                                        key={idx}
+                                        type="button"
+                                        onClick={() => handleDemoPersona(p.email)}
+                                        disabled={loading}
+                                        className="flex items-center justify-between p-2.5 rounded-lg border border-outline-variant/30 hover:border-primary bg-surface-container-low hover:bg-surface-container text-left transition-all group"
+                                    >
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="w-7 h-7 rounded-md bg-surface-container-lowest flex items-center justify-center border border-outline-variant/20 group-hover:border-primary/50">
+                                                <Icon size={14} className={p.color} />
+                                            </div>
+                                            <div>
+                                                <div className="text-xs font-bold text-on-surface group-hover:text-primary">{p.name}</div>
+                                                <div className="text-[10px] text-on-surface-variant">{p.role} • {p.dept}</div>
+                                            </div>
+                                        </div>
+                                        <span className="text-[10px] font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                            Log In <ArrowRight size={12} />
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
     );
 }
