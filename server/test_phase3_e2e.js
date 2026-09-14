@@ -53,30 +53,37 @@ async function runPhase3E2E() {
     console.log(`-> AI Title: "${copilot.data?.title}"`);
     console.log(`-> AI Suggested KPIs: ${copilot.data?.kpis?.map(k => `${k.name} (${k.baseline}->${k.target} ${k.unit})`).join(', ')}`);
 
-    // 3. Save & Publish Challenge
-    console.log('\n[Step 3] Publishing New Innovation Challenge...');
-    const newChallenge = await req('/api/challenges', 'POST', {
-        title: 'Municipal Hospital Outpatient Queuing & Triage Optimization',
-        problemStatement: 'Excessive outpatient waiting times averaging 90 minutes causing severe emergency department spillover and patient dissatisfaction.',
-        description: 'Implement AI-powered patient queuing, dynamic doctor appointment allocation, and automated triage telemetry.',
-        category: 'Healthcare',
-        location: 'Chhatrapati Shivaji Maharaj General Hospital, OPD Block',
-        budget: '₹25,00,000',
-        timeline: '90 Days',
-        baselineValue: '90 Minutes',
-        targetValue: '45 Minutes',
-        requiredCapabilities: ['Real-time Queue Prediction', 'EMR/EHR FHIR API Interoperability', 'Dynamic Doctor Triage Scheduling'],
-        eligibilityCriteria: 'DPIIT recognized healthcare AI startups with proven hospital deployment track record.',
-        expectedOutcomes: 'Achieve minimum 45% reduction in outpatient queue latency within 90-day sandbox pilot.',
-        status: 'PUBLISHED',
-        kpis: [
-            { name: 'Average Outpatient Waiting Time', metric: 'Wait Duration', baseline: '90', target: '45', unit: 'Minutes' },
-            { name: 'Peak Triage Triage Latency', metric: 'Triage Time', baseline: '25', target: '6', unit: 'Minutes' }
-        ]
-    }, govToken);
-    if (newChallenge.status !== 200 && newChallenge.status !== 201) throw new Error('Challenge creation failed: ' + JSON.stringify(newChallenge.data));
-    const challengeId = newChallenge.data.id;
-    console.log(`-> Challenge Created & Published: ID=${challengeId} ("${newChallenge.data.title}")`);
+    // 3. Save & Publish Challenge (or reuse existing test challenge)
+    console.log('\n[Step 3] Publishing or Reusing Innovation Challenge...');
+    const existingChallenges = await req('/api/challenges?search=Municipal+Hospital+Outpatient', 'GET', null, govToken);
+    let challengeId;
+    if (existingChallenges.data && existingChallenges.data.length > 0) {
+        challengeId = existingChallenges.data[0].id;
+        console.log(`-> Reusing Existing Challenge: ID=${challengeId} ("${existingChallenges.data[0].title}")`);
+    } else {
+        const newChallenge = await req('/api/challenges', 'POST', {
+            title: 'Municipal Hospital Outpatient Queuing & Triage Optimization',
+            problemStatement: 'Excessive outpatient waiting times averaging 90 minutes causing severe emergency department spillover and patient dissatisfaction.',
+            description: 'Implement AI-powered patient queuing, dynamic doctor appointment allocation, and automated triage telemetry.',
+            category: 'Healthcare',
+            location: 'Chhatrapati Shivaji Maharaj General Hospital, OPD Block',
+            budget: '₹25,00,000',
+            timeline: '90 Days',
+            baselineValue: '90 Minutes',
+            targetValue: '45 Minutes',
+            requiredCapabilities: ['Real-time Queue Prediction', 'EMR/EHR FHIR API Interoperability', 'Dynamic Doctor Triage Scheduling'],
+            eligibilityCriteria: 'DPIIT recognized healthcare AI startups with proven hospital deployment track record.',
+            expectedOutcomes: 'Achieve minimum 45% reduction in outpatient queue latency within 90-day sandbox pilot.',
+            status: 'PUBLISHED',
+            kpis: [
+                { name: 'Average Outpatient Waiting Time', metric: 'Wait Duration', baseline: '90', target: '45', unit: 'Minutes' },
+                { name: 'Peak Triage Triage Latency', metric: 'Triage Time', baseline: '25', target: '6', unit: 'Minutes' }
+            ]
+        }, govToken);
+        if (newChallenge.status !== 200 && newChallenge.status !== 201) throw new Error('Challenge creation failed: ' + JSON.stringify(newChallenge.data));
+        challengeId = newChallenge.data.id;
+        console.log(`-> Challenge Created & Published: ID=${challengeId} ("${newChallenge.data.title}")`);
+    }
 
     // 4. Startup Login
     console.log('\n[Step 4] Startup Founder Login (founder@medflow.com)...');
