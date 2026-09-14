@@ -7,12 +7,15 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:seed": "npm run seed --prefix server"
   },
   "dependencies": {
+    "@prisma/client": "^5.14.0",
     "axios": "^1.20.0",
     "clsx": "^2.1.1",
     "lucide-react": "^1.41.0",
+    "prisma": "^5.14.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.3",

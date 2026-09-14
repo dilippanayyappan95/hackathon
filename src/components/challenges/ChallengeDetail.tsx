@@ -360,8 +360,10 @@ export default function ChallengeDetail() {
 
                         <form onSubmit={handleApply} className="space-y-4">
                             <div>
-                                <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Solution Summary / Proposed Architecture</label>
+                                <label htmlFor="solution-summary" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Solution Summary / Proposed Architecture</label>
                                 <textarea
+                                    id="solution-summary"
+                                    name="solutionSummary"
                                     rows={4}
                                     value={solutionSummary}
                                     onChange={(e) => setSolutionSummary(e.target.value)}
@@ -373,8 +375,10 @@ export default function ChallengeDetail() {
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Proposed Budget (₹)</label>
+                                    <label htmlFor="proposed-budget" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Proposed Budget (₹)</label>
                                     <input
+                                        id="proposed-budget"
+                                        name="proposedBudget"
                                         type="text"
                                         value={proposedBudget}
                                         onChange={(e) => setProposedBudget(e.target.value)}
@@ -383,8 +387,10 @@ export default function ChallengeDetail() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Proposed Timeline</label>
+                                    <label htmlFor="proposed-timeline" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Proposed Timeline</label>
                                     <input
+                                        id="proposed-timeline"
+                                        name="proposedTimeline"
                                         type="text"
                                         value={proposedTimeline}
                                         onChange={(e) => setProposedTimeline(e.target.value)}

@@ -165,6 +165,9 @@ export default function InnovationPassport() {
                 <div className="flex items-center flex-wrap gap-2.5">
                     {/* Pilot Selector */}
                     <select
+                        id="passport-pilot-select"
+                        name="selectedPassportPilot"
+                        aria-label="Select Pilot Project for Innovation Proof Passport"
                         value={selectedPassport?.pilotId || selectedPassport?.id || ''}
                         onChange={(e) => loadPassportByPilotId(e.target.value)}
                         className="bg-surface-container border border-outline-variant/50 text-xs font-bold py-2 px-3 rounded-lg text-on-surface focus:ring-2 focus:ring-primary focus:outline-none"

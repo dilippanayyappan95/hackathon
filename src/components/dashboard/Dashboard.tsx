@@ -2,6 +2,7 @@ import { Target, Zap, ShieldCheck, FileCheck2, Loader2, ArrowRight, Building2, C
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../lib/api';
+import GovProofWorkflowStepper from '../common/GovProofWorkflowStepper';
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -69,7 +70,7 @@ export default function Dashboard() {
             subtext: `${stats.scaled || 0} Scaled for Procurement`,
             icon: <FileCheck2 className="text-secondary-container" size={24} />,
             to: '/passports',
-            badge: 'Immutable Ledger',
+            badge: 'Integrity Hash Verified',
             color: 'bg-secondary-fixed/40 text-secondary'
         },
     ];
@@ -102,7 +103,7 @@ export default function Dashboard() {
     ];
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-300">
+        <div className="space-y-6 animate-in fade-in duration-300">
             {/* Header */}
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/30 pb-5">
                 <div>
@@ -131,6 +132,9 @@ export default function Dashboard() {
                     </Link>
                 </div>
             </header>
+
+            {/* Reusable Workflow Stepper */}
+            <GovProofWorkflowStepper currentStage={stats.scaled > 0 ? 'scale' : stats.passports > 0 ? 'passport' : stats.validated > 0 ? 'validation' : 'pilot'} />
 
             {/* KPI Metric Cards */}
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

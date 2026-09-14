@@ -113,8 +113,10 @@ export default function CreateChallenge() {
 
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Challenge Title</label>
+                                <label htmlFor="challenge-title" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Challenge Title</label>
                                 <input
+                                    id="challenge-title"
+                                    name="title"
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
@@ -126,8 +128,10 @@ export default function CreateChallenge() {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Operating Department</label>
+                                    <label htmlFor="challenge-department" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Operating Department</label>
                                     <select
+                                        id="challenge-department"
+                                        name="department"
                                         value={department}
                                         onChange={(e) => setDepartment(e.target.value)}
                                         className="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs font-semibold focus:outline-none"
@@ -138,8 +142,10 @@ export default function CreateChallenge() {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Innovation Domain</label>
+                                    <label htmlFor="challenge-category" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Innovation Domain</label>
                                     <select
+                                        id="challenge-category"
+                                        name="category"
                                         value={category}
                                         onChange={(e) => setCategory(e.target.value)}
                                         className="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs font-semibold focus:outline-none"
@@ -155,8 +161,10 @@ export default function CreateChallenge() {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Problem Statement Formulation</label>
+                                <label htmlFor="challenge-problem" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Problem Statement Formulation</label>
                                 <textarea
+                                    id="challenge-problem"
+                                    name="problemStatement"
                                     rows={4}
                                     value={problemStatement}
                                     onChange={(e) => setProblemStatement(e.target.value)}
@@ -176,8 +184,10 @@ export default function CreateChallenge() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Baseline Constraint Metric</label>
+                                <label htmlFor="challenge-baseline" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Baseline Constraint Metric</label>
                                 <input
+                                    id="challenge-baseline"
+                                    name="baselineValue"
                                     type="text"
                                     value={baselineValue}
                                     onChange={(e) => setBaselineValue(e.target.value)}
@@ -186,8 +196,10 @@ export default function CreateChallenge() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-secondary uppercase mb-1">Target Improvement Objective</label>
+                                <label htmlFor="challenge-target" className="block text-xs font-bold text-secondary uppercase mb-1">Target Improvement Objective</label>
                                 <input
+                                    id="challenge-target"
+                                    name="targetValue"
                                     type="text"
                                     value={targetValue}
                                     onChange={(e) => setTargetValue(e.target.value)}
@@ -196,8 +208,10 @@ export default function CreateChallenge() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Allocated Pilot Budget (₹)</label>
+                                <label htmlFor="challenge-budget" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Allocated Pilot Budget (₹)</label>
                                 <input
+                                    id="challenge-budget"
+                                    name="budget"
                                     type="text"
                                     value={budget}
                                     onChange={(e) => setBudget(e.target.value)}
@@ -206,8 +220,10 @@ export default function CreateChallenge() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Pilot Duration</label>
+                                <label htmlFor="challenge-timeline" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Pilot Duration</label>
                                 <select
+                                    id="challenge-timeline"
+                                    name="timeline"
                                     value={timeline}
                                     onChange={(e) => setTimeline(e.target.value)}
                                     className="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-3 text-xs font-medium focus:outline-none"
@@ -229,8 +245,10 @@ export default function CreateChallenge() {
 
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Pilot Sandbox Location</label>
+                                <label htmlFor="challenge-location" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Pilot Sandbox Location</label>
                                 <input
+                                    id="challenge-location"
+                                    name="location"
                                     type="text"
                                     value={location}
                                     onChange={(e) => setLocation(e.target.value)}

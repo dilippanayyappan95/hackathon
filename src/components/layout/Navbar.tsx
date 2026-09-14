@@ -1,4 +1,4 @@
-import { Search, ShieldCheck, User, LogOut, ChevronDown, Check, Sparkles } from 'lucide-react';
+import { Search, ShieldCheck, User, LogOut, ChevronDown, Check } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -78,7 +78,9 @@ export default function Navbar() {
             <form onSubmit={handleSearch} className="relative hidden md:block w-96">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-outline" size={16} />
                 <input
-                    type="text"
+                    id="navbar-search"
+                    name="search"
+                    type="search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search challenges, startups, pilot records..."
@@ -93,13 +95,14 @@ export default function Navbar() {
                     <button
                         type="button"
                         onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-                        className="flex items-center gap-2 bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/30 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-                        title="Quick Switch Demo Persona"
+                        className="flex items-center gap-2 bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant/60 px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-xs"
+                        title="Quick Switch Demo Persona (Demo Mode)"
                     >
-                        <Sparkles size={14} className="text-secondary" />
-                        <span className="hidden sm:inline">Demo Persona:</span>
-                        <span className="text-primary font-extrabold">{user?.role || 'Switch Role'}</span>
-                        <ChevronDown size={14} />
+                        <span className="text-[9px] font-mono tracking-wider uppercase bg-secondary/15 text-secondary border border-secondary/30 px-1.5 py-0.5 rounded font-extrabold">
+                            DEMO MODE
+                        </span>
+                        <span className="text-primary font-bold">{user?.role || 'Switch Role'}</span>
+                        <ChevronDown size={14} className="text-on-surface-variant" />
                     </button>
 
                     {isRoleDropdownOpen && (

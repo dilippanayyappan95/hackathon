@@ -66,8 +66,10 @@ export default function ProcurementReadiness() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-on-surface-variant whitespace-nowrap">Scale Candidate:</span>
+                    <label htmlFor="procurement-candidate-select" className="text-xs font-bold text-on-surface-variant whitespace-nowrap">Scale Candidate:</label>
                     <select
+                        id="procurement-candidate-select"
+                        name="selectedPilotId"
                         value={selectedPilotId}
                         onChange={(e) => setSelectedPilotId(e.target.value)}
                         className="bg-surface-container border border-outline-variant/50 px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface focus:outline-none max-w-xs"

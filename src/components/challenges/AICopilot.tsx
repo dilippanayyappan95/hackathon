@@ -103,8 +103,10 @@ export default function AICopilot() {
                 <div className="p-6 bg-surface-container-low/50 space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Department</label>
+                            <label htmlFor="ai-dept" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Department</label>
                             <select
+                                id="ai-dept"
+                                name="department"
                                 value={selectedDept}
                                 onChange={(e) => setSelectedDept(e.target.value)}
                                 className="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-2.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-secondary"
@@ -115,8 +117,10 @@ export default function AICopilot() {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Category / Domain</label>
+                            <label htmlFor="ai-category" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Category / Domain</label>
                             <select
+                                id="ai-category"
+                                name="category"
                                 value={selectedCat}
                                 onChange={(e) => setSelectedCat(e.target.value)}
                                 className="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-lg p-2.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-secondary"
@@ -132,10 +136,12 @@ export default function AICopilot() {
                     </div>
 
                     <div>
-                        <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">
+                        <label htmlFor="ai-problem-input" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">
                             Describe the Government Problem / Constraint:
                         </label>
                         <textarea
+                            id="ai-problem-input"
+                            name="problemDescription"
                             rows={3}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
@@ -185,8 +191,10 @@ export default function AICopilot() {
                         {/* Title & Problem */}
                         <div className="space-y-4">
                             <div>
-                                <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Generated Challenge Title</label>
+                                <label htmlFor="draft-title" className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Generated Challenge Title</label>
                                 <input
+                                    id="draft-title"
+                                    name="draftTitle"
                                     type="text"
                                     value={draft.title}
                                     onChange={(e) => setDraft({ ...draft, title: e.target.value })}
@@ -196,8 +204,10 @@ export default function AICopilot() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Baseline Constraint</label>
+                                    <label htmlFor="draft-baseline" className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Baseline Constraint</label>
                                     <textarea
+                                        id="draft-baseline"
+                                        name="draftBaseline"
                                         rows={2}
                                         value={draft.baseline}
                                         onChange={(e) => setDraft({ ...draft, baseline: e.target.value })}
@@ -205,8 +215,10 @@ export default function AICopilot() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-bold text-secondary uppercase tracking-wider">Target Objective</label>
+                                    <label htmlFor="draft-target" className="text-[10px] font-bold text-secondary uppercase tracking-wider">Target Objective</label>
                                     <textarea
+                                        id="draft-target"
+                                        name="draftTarget"
                                         rows={2}
                                         value={draft.target}
                                         onChange={(e) => setDraft({ ...draft, target: e.target.value })}
@@ -219,8 +231,10 @@ export default function AICopilot() {
                         {/* KPIs & Specs */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="bg-surface-container p-3.5 rounded-lg">
-                                <span className="text-[10px] uppercase font-bold text-on-surface-variant">Allocated Budget</span>
+                                <label htmlFor="draft-budget" className="block text-[10px] uppercase font-bold text-on-surface-variant">Allocated Budget</label>
                                 <input
+                                    id="draft-budget"
+                                    name="draftBudget"
                                     type="text"
                                     value={draft.budget}
                                     onChange={(e) => setDraft({ ...draft, budget: e.target.value })}
@@ -228,8 +242,10 @@ export default function AICopilot() {
                                 />
                             </div>
                             <div className="bg-surface-container p-3.5 rounded-lg">
-                                <span className="text-[10px] uppercase font-bold text-on-surface-variant">Pilot Duration</span>
+                                <label htmlFor="draft-duration" className="block text-[10px] uppercase font-bold text-on-surface-variant">Pilot Duration</label>
                                 <input
+                                    id="draft-duration"
+                                    name="draftDuration"
                                     type="text"
                                     value={draft.duration}
                                     onChange={(e) => setDraft({ ...draft, duration: e.target.value })}

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import api from '../../lib/api';
 import { useAuth } from '../../context/AuthContext';
+import GovProofWorkflowStepper from '../common/GovProofWorkflowStepper';
 
 export default function StartupDashboard() {
     const { user } = useAuth();
@@ -51,7 +52,7 @@ export default function StartupDashboard() {
     const pendingEvidenceCount = evidence.filter((e: any) => e.verifiedStatus === 'SUBMITTED' || e.verifiedStatus === 'UNDER_REVIEW').length;
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-300 pb-16">
+        <div className="space-y-6 animate-in fade-in duration-300 pb-16">
             {/* Startup Enterprise Header */}
             <div className="bg-gradient-to-r from-primary to-primary-container p-6 rounded-2xl text-on-primary shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div className="space-y-1.5">
@@ -86,6 +87,9 @@ export default function StartupDashboard() {
                     </Link>
                 </div>
             </div>
+
+            {/* Stepper */}
+            <GovProofWorkflowStepper currentStage={myPassports.length > 0 ? 'passport' : myPilots.length > 0 ? 'pilot' : 'discovery'} />
 
             {/* Metric KPI Cards */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">

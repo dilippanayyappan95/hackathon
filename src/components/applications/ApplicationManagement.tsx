@@ -86,7 +86,9 @@ export default function ApplicationManagement() {
                 <div className="relative w-full md:w-80">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-outline" size={16} />
                     <input
-                        type="text"
+                        id="application-search"
+                        name="search"
+                        type="search"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search by startup name or proposal..."
@@ -97,6 +99,8 @@ export default function ApplicationManagement() {
                 <div className="flex items-center gap-2 w-full md:w-auto justify-end">
                     <Filter size={14} className="text-on-surface-variant" />
                     <select
+                        id="application-status-filter"
+                        name="statusFilter"
                         value={statusFilter}
                         onChange={(e) => {
                             setStatusFilter(e.target.value);

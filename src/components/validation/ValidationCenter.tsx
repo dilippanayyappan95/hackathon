@@ -87,8 +87,10 @@ export default function ValidationCenter() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-on-surface-variant whitespace-nowrap">Audit Pilot:</span>
+                    <label htmlFor="audit-pilot-select" className="text-xs font-bold text-on-surface-variant whitespace-nowrap">Audit Pilot:</label>
                     <select
+                        id="audit-pilot-select"
+                        name="selectedPilotId"
                         value={selectedPilotId}
                         onChange={(e) => setSelectedPilotId(e.target.value)}
                         className="bg-surface-container border border-outline-variant/50 px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface focus:outline-none max-w-xs"
@@ -179,8 +181,10 @@ export default function ValidationCenter() {
 
                     <div className="space-y-4 text-xs">
                         <div>
-                            <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Audit Methodology</label>
+                            <label htmlFor="audit-methodology" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Audit Methodology</label>
                             <input
+                                id="audit-methodology"
+                                name="methodology"
                                 type="text"
                                 value={methodology}
                                 onChange={(e) => setMethodology(e.target.value)}
@@ -189,8 +193,10 @@ export default function ValidationCenter() {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Auditor Findings & Observations</label>
+                            <label htmlFor="auditor-findings" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Auditor Findings & Observations</label>
                             <textarea
+                                id="auditor-findings"
+                                name="findings"
                                 rows={4}
                                 value={findings}
                                 onChange={(e) => setFindings(e.target.value)}
@@ -200,8 +206,10 @@ export default function ValidationCenter() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Data Confidence Level</label>
+                                <label htmlFor="data-confidence-level" className="block text-xs font-bold text-on-surface-variant uppercase mb-1">Data Confidence Level</label>
                                 <select
+                                    id="data-confidence-level"
+                                    name="confidence"
                                     value={confidence}
                                     onChange={(e) => setConfidence(e.target.value)}
                                     className="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 text-xs font-semibold focus:outline-none"

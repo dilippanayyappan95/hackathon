@@ -39,7 +39,9 @@ export default function PilotManagement() {
                     <div className="relative w-full md:w-96">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-outline" size={16} />
                         <input
-                            type="text"
+                            id="pilot-search"
+                            name="search"
+                            type="search"
                             placeholder="Search by ID, Startup, or Department..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}

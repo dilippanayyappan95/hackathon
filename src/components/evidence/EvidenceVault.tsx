@@ -121,7 +121,9 @@ export default function EvidenceVault() {
                     <div className="relative w-full md:w-80">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-outline" size={16} />
                         <input
-                            type="text"
+                            id="evidence-search"
+                            name="search"
+                            type="search"
                             placeholder="Search evidence files, startups, challenges..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -132,6 +134,8 @@ export default function EvidenceVault() {
                     <div className="flex items-center gap-2 w-full md:w-auto justify-end">
                         <Filter size={14} className="text-on-surface-variant" />
                         <select
+                            id="evidence-status-filter"
+                            name="statusFilter"
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className="bg-surface-container-lowest border border-outline-variant/50 px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface focus:outline-none"
@@ -149,57 +153,63 @@ export default function EvidenceVault() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[800px]">
                         <thead>
-                            <tr className="bg-surface-container-lowest border-b border-outline-variant/30 text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">
-                                <th className="px-5 py-3.5">Artifact Name / File</th>
-                                <th className="px-5 py-3.5">Pilot Project & Startup</th>
-                                <th className="px-5 py-3.5">Artifact Type</th>
-                                <th className="px-5 py-3.5">Verification Status</th>
-                                <th className="px-5 py-3.5 text-right">Actions</th>
+                            <tr className="bg-surface-container-low text-on-surface-variant text-[11px] uppercase tracking-wider font-extrabold border-b border-outline-variant/30">
+                                <th className="px-5 py-3">Artifact & Pilot</th>
+                                <th className="px-5 py-3">Type</th>
+                                <th className="px-5 py-3">Uploaded By</th>
+                                <th className="px-5 py-3">Integrity Hash (SHA-256)</th>
+                                <th className="px-5 py-3">Verification</th>
+                                <th className="px-5 py-3 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-outline-variant/20 text-xs">
                             {loading && (
                                 <tr>
-                                    <td colSpan={5} className="p-8 text-center text-on-surface-variant">
+                                    <td colSpan={6} className="p-8 text-center text-on-surface-variant">
                                         <Loader2 className="animate-spin inline mr-2 text-primary" size={18} /> Retrieving Vault records...
                                     </td>
                                 </tr>
                             )}
                             {!loading && filteredDocs.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="p-8 text-center text-on-surface-variant font-medium">
+                                    <td colSpan={6} className="p-8 text-center text-on-surface-variant font-medium">
                                         No evidence artifacts found matching current filter.
                                     </td>
                                 </tr>
                             )}
-                            {filteredDocs.map((doc, i) => (
-                                <tr key={doc.id || i} className="hover:bg-surface-container-low transition-colors group">
+                            {filteredDocs.map((doc) => (
+                                <tr key={doc.id} className="hover:bg-surface-container/50 transition-colors">
                                     <td className="px-5 py-4">
-                                        <div className="font-bold text-sm text-on-surface mb-0.5 flex items-center gap-2">
-                                            <FileText size={15} className="text-primary shrink-0" />
+                                        <div className="font-bold text-on-surface text-xs flex items-center gap-2">
+                                            <FileText className="text-primary shrink-0" size={16} />
                                             {doc.title || doc.fileUrl}
                                         </div>
-                                        <div className="text-[11px] text-on-surface-variant">
-                                            {doc.createdAt ? new Date(doc.createdAt).toLocaleDateString() : 'Active Snapshot'}
+                                        <span className="text-[11px] text-on-surface-variant font-medium block mt-0.5">
+                                            {doc.pilot?.challenge?.title || 'State Sandbox Pilot Deployment'}
+                                        </span>
+                                    </td>
+                                    <td className="px-5 py-4 font-medium text-on-surface-variant">
+                                        {doc.fileType || 'Dataset / Log'}
+                                    </td>
+                                    <td className="px-5 py-4">
+                                        <span className="font-bold text-on-surface">{doc.uploadedBy?.name || 'Startup Lead'}</span>
+                                        <span className="text-[10px] text-on-surface-variant block">{doc.uploadedBy?.startup?.name || 'DPIIT Innovator'}</span>
+                                    </td>
+                                    <td className="px-5 py-4 font-mono text-[11px] text-on-surface-variant">
+                                        <div className="flex items-center gap-1.5" title={doc.hash || 'SHA-256 generated'}>
+                                            <ShieldCheck size={14} className="text-secondary shrink-0" />
+                                            <span className="truncate max-w-[140px]">{doc.hash || 'e3b0c44298fc1c149afbf4c8...'}</span>
                                         </div>
                                     </td>
                                     <td className="px-5 py-4">
-                                        <div className="font-bold text-on-surface">{doc.pilot?.startup?.name || 'Enterprise Startup'}</div>
-                                        <div className="text-[11px] text-on-surface-variant truncate max-w-xs">{doc.pilot?.challenge?.title}</div>
-                                    </td>
-                                    <td className="px-5 py-4">
-                                        <span className="font-medium text-on-surface bg-surface-container px-2 py-0.5 rounded text-[11px]">
-                                            {doc.fileType || 'Pilot Report'}
-                                        </span>
-                                    </td>
-                                    <td className="px-5 py-4">
-                                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                                            doc.verifiedStatus === 'VERIFIED' ? 'bg-tertiary-fixed/30 text-on-tertiary-fixed-variant border border-tertiary-fixed-dim' :
-                                            doc.verifiedStatus === 'UNDER_REVIEW' ? 'bg-secondary/20 text-secondary border border-secondary/30' :
-                                            doc.verifiedStatus === 'REJECTED' ? 'bg-error-container text-on-error-container' :
-                                            'bg-surface-container text-on-surface-variant border border-outline-variant/40'
+                                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded text-[11px] font-bold ${
+                                            doc.verifiedStatus === 'VERIFIED'
+                                                ? 'bg-primary/10 text-primary border border-primary/20'
+                                                : doc.verifiedStatus === 'REJECTED'
+                                                ? 'bg-error-container text-on-error-container'
+                                                : 'bg-surface-container text-on-surface-variant'
                                         }`}>
-                                            {doc.verifiedStatus === 'VERIFIED' && <ShieldCheck size={12} />}
+                                            {doc.verifiedStatus === 'VERIFIED' ? <ShieldCheck size={12} /> : null}
                                             {doc.verifiedStatus || 'SUBMITTED'}
                                         </span>
                                     </td>
@@ -239,9 +249,9 @@ export default function EvidenceVault() {
 
             {/* Upload Modal */}
             {isUploadModalOpen && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
-                    <div className="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-level-4">
-                        <div className="flex items-center justify-between border-b border-outline-variant/30 pb-3">
+                <div className="fixed inset-0 bg-scrim/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+                    <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl max-w-lg w-full p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between border-b border-outline-variant/30 pb-3 mb-4">
                             <h3 className="font-display font-bold text-base text-on-surface flex items-center gap-2">
                                 <UploadCloud className="text-primary" size={18} /> Submit Evidence Artifact
                             </h3>
@@ -250,8 +260,10 @@ export default function EvidenceVault() {
 
                         <form onSubmit={handleUpload} className="space-y-3.5 text-xs">
                             <div>
-                                <label className="block font-bold text-on-surface-variant uppercase mb-1">Target Pilot Project</label>
+                                <label htmlFor="upload-pilot-select" className="block font-bold text-on-surface-variant uppercase mb-1">Target Pilot Project</label>
                                 <select
+                                    id="upload-pilot-select"
+                                    name="pilotId"
                                     value={selectedPilotId}
                                     onChange={(e) => setSelectedPilotId(e.target.value)}
                                     className="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 font-semibold text-on-surface focus:outline-none"
@@ -266,8 +278,10 @@ export default function EvidenceVault() {
                             </div>
 
                             <div>
-                                <label className="block font-bold text-on-surface-variant uppercase mb-1">Evidence Title</label>
+                                <label htmlFor="upload-evidence-title" className="block font-bold text-on-surface-variant uppercase mb-1">Evidence Title</label>
                                 <input
+                                    id="upload-evidence-title"
+                                    name="evidenceTitle"
                                     type="text"
                                     value={evidenceTitle}
                                     onChange={(e) => setEvidenceTitle(e.target.value)}
@@ -278,8 +292,10 @@ export default function EvidenceVault() {
                             </div>
 
                             <div>
-                                <label className="block font-bold text-on-surface-variant uppercase mb-1">Artifact Type</label>
+                                <label htmlFor="upload-evidence-type" className="block font-bold text-on-surface-variant uppercase mb-1">Artifact Type</label>
                                 <select
+                                    id="upload-evidence-type"
+                                    name="evidenceType"
                                     value={evidenceType}
                                     onChange={(e) => setEvidenceType(e.target.value)}
                                     className="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2.5 font-semibold focus:outline-none"
@@ -293,8 +309,10 @@ export default function EvidenceVault() {
                             </div>
 
                             <div>
-                                <label className="block font-bold text-on-surface-variant uppercase mb-1">Description / Methodology</label>
+                                <label htmlFor="upload-evidence-desc" className="block font-bold text-on-surface-variant uppercase mb-1">Description / Methodology</label>
                                 <textarea
+                                    id="upload-evidence-desc"
+                                    name="evidenceDescription"
                                     rows={3}
                                     value={evidenceDesc}
                                     onChange={(e) => setEvidenceDesc(e.target.value)}

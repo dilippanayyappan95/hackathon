@@ -109,8 +109,10 @@ export default function EvaluationCenter() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-on-surface-variant whitespace-nowrap">Candidate:</span>
+                    <label htmlFor="eval-candidate-select" className="text-xs font-bold text-on-surface-variant whitespace-nowrap">Candidate:</label>
                     <select
+                        id="eval-candidate-select"
+                        name="selectedAppId"
                         value={selectedAppId}
                         onChange={(e) => setSelectedAppId(e.target.value)}
                         className="bg-surface-container border border-outline-variant/50 px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface focus:outline-none max-w-xs"
@@ -170,12 +172,14 @@ export default function EvaluationCenter() {
                         <div key={metric.key} className="space-y-2 p-3 bg-surface-container rounded-lg border border-outline-variant/20 hover:border-outline-variant/40 transition-colors">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <label className="text-xs font-bold text-on-surface">{metric.label}</label>
+                                    <label htmlFor={`metric-score-${metric.key}`} className="text-xs font-bold text-on-surface">{metric.label}</label>
                                     <span className="text-[10px] font-bold bg-surface-container-lowest px-1.5 py-0.5 rounded text-on-surface-variant border border-outline-variant/30">{metric.weight}</span>
                                 </div>
                                 <span className="font-mono font-bold text-xs text-primary">{scores[metric.key as keyof typeof scores]}/100</span>
                             </div>
                             <input
+                                id={`metric-score-${metric.key}`}
+                                name={`score_${metric.key}`}
                                 type="range"
                                 min="0" max="100"
                                 value={scores[metric.key as keyof typeof scores]}
@@ -200,8 +204,10 @@ export default function EvaluationCenter() {
 
                     <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-5 shadow-sm space-y-4">
                         <div className="space-y-1.5">
-                            <label className="text-xs font-bold text-on-surface uppercase">Qualitative Justification</label>
+                            <label htmlFor="qualitative-justification" className="text-xs font-bold text-on-surface uppercase">Qualitative Justification</label>
                             <textarea
+                                id="qualitative-justification"
+                                name="qualitativeJustification"
                                 value={comments}
                                 onChange={e => setComments(e.target.value)}
                                 rows={3}
@@ -211,8 +217,10 @@ export default function EvaluationCenter() {
                         </div>
 
                         <div className="pt-2 border-t border-outline-variant/30">
-                            <label className="flex items-start gap-2 text-xs font-medium text-on-surface-variant cursor-pointer">
+                            <label htmlFor="conflict-checkbox" className="flex items-start gap-2 text-xs font-medium text-on-surface-variant cursor-pointer">
                                 <input
+                                    id="conflict-checkbox"
+                                    name="conflictDeclaration"
                                     type="checkbox"
                                     checked={conflict}
                                     onChange={e => setConflict(e.target.checked)}

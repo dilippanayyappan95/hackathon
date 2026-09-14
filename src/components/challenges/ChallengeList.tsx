@@ -74,7 +74,9 @@ export default function ChallengeList() {
                     <div className="relative w-full md:w-80">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-outline" size={16} />
                         <input
-                            type="text"
+                            id="challenge-search"
+                            name="search"
+                            type="search"
                             placeholder="Search by Title, ID, or Keywords..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -84,6 +86,8 @@ export default function ChallengeList() {
 
                     <div className="flex w-full md:w-auto items-center gap-2.5 flex-1 justify-end">
                         <select
+                            id="dept-filter"
+                            name="deptFilter"
                             value={deptFilter}
                             onChange={(e) => setDeptFilter(e.target.value)}
                             className="bg-surface-container-lowest border border-outline-variant/50 text-xs font-semibold py-2 px-3 rounded-lg focus:outline-none text-on-surface-variant max-w-xs"
@@ -93,6 +97,8 @@ export default function ChallengeList() {
                         </select>
 
                         <select
+                            id="status-filter"
+                            name="statusFilter"
                             value={statusFilter}
                             onChange={(e) => {
                                 setStatusFilter(e.target.value);

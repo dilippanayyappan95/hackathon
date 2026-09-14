@@ -202,11 +202,14 @@ export default function Login() {
                         )}
 
                         <div className="space-y-1">
-                            <label className="text-xs font-bold text-on-surface-variant">Official Email</label>
+                            <label htmlFor="login-email" className="text-xs font-bold text-on-surface-variant">Official Email</label>
                             <div className="relative">
                                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant" size={16} />
                                 <input
+                                    id="login-email"
+                                    name="email"
                                     type="email"
+                                    autoComplete="username email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder={workspace === 'government' ? 'gov@demo.com' : 'founder@medflow.com'}
@@ -218,7 +221,7 @@ export default function Login() {
 
                         <div className="space-y-1">
                             <div className="flex items-center justify-between">
-                                <label className="text-xs font-bold text-on-surface-variant">Password</label>
+                                <label htmlFor="login-password" className="text-xs font-bold text-on-surface-variant">Password</label>
                                 <span className="text-[11px] text-primary font-semibold hover:underline cursor-pointer">
                                     Forgot Password?
                                 </span>
@@ -226,7 +229,10 @@ export default function Login() {
                             <div className="relative">
                                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant" size={16} />
                                 <input
+                                    id="login-password"
+                                    name="password"
                                     type={showPassword ? 'text' : 'password'}
+                                    autoComplete="current-password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
@@ -248,6 +254,7 @@ export default function Login() {
                             <input
                                 type="checkbox"
                                 id="rememberMe"
+                                name="rememberMe"
                                 checked={rememberMe}
                                 onChange={(e) => setRememberMe(e.target.checked)}
                                 className="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary"

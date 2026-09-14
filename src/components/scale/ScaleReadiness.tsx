@@ -114,8 +114,10 @@ export default function ScaleReadiness() {
 
                 {/* Pilot Selector */}
                 <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-on-surface-variant whitespace-nowrap">Evaluate Pilot:</span>
+                    <label htmlFor="scale-pilot-select" className="text-xs font-bold text-on-surface-variant whitespace-nowrap">Evaluate Pilot:</label>
                     <select
+                        id="scale-pilot-select"
+                        name="selectedPilotId"
                         value={selectedPilotId}
                         onChange={(e) => handlePilotChange(e.target.value)}
                         className="bg-surface-container border border-outline-variant/50 px-3 py-1.5 rounded-lg text-xs font-bold text-on-surface focus:outline-none max-w-xs"
@@ -251,10 +253,12 @@ export default function ScaleReadiness() {
                         </div>
 
                         <div>
-                            <label className="block text-[10px] font-bold text-on-surface-variant uppercase mb-1">
+                            <label htmlFor="scale-order-notes" className="block text-[10px] font-bold text-on-surface-variant uppercase mb-1">
                                 Statutory Order Notes / Justification:
                             </label>
                             <textarea
+                                id="scale-order-notes"
+                                name="scaleOrderNotes"
                                 rows={3}
                                 value={comments}
                                 onChange={(e) => setComments(e.target.value)}

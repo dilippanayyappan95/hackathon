@@ -75,8 +75,10 @@ export default function DiscoverStartups() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <label className="text-xs font-semibold text-on-surface-variant whitespace-nowrap">Change Challenge:</label>
+                    <label htmlFor="select-challenge-id" className="text-xs font-semibold text-on-surface-variant whitespace-nowrap">Change Challenge:</label>
                     <select
+                        id="select-challenge-id"
+                        name="selectedChallengeId"
                         value={selectedChallengeId}
                         onChange={(e) => setSelectedChallengeId(e.target.value)}
                         className="bg-surface-container border border-outline-variant/50 rounded-lg py-1.5 px-3 text-xs font-bold text-on-surface focus:outline-none max-w-xs"
@@ -98,8 +100,10 @@ export default function DiscoverStartups() {
                         </h3>
 
                         <div>
-                            <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Domain</label>
+                            <label htmlFor="domain-filter" className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-1">Domain</label>
                             <select
+                                id="domain-filter"
+                                name="selectedDomain"
                                 value={selectedDomain}
                                 onChange={(e) => setSelectedDomain(e.target.value)}
                                 className="w-full bg-surface-container border border-outline-variant/50 rounded-lg p-2 text-xs font-semibold text-on-surface focus:outline-none"
@@ -116,10 +120,12 @@ export default function DiscoverStartups() {
 
                         <div>
                             <div className="flex items-center justify-between mb-1">
-                                <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Min AI Match</label>
+                                <label htmlFor="min-match-score" className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Min AI Match</label>
                                 <span className="font-mono text-xs font-bold text-primary">{minScore}%</span>
                             </div>
                             <input
+                                id="min-match-score"
+                                name="minScore"
                                 type="range"
                                 min="40"
                                 max="95"
@@ -143,7 +149,9 @@ export default function DiscoverStartups() {
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-outline" size={16} />
                         <input
-                            type="text"
+                            id="startup-search"
+                            name="search"
+                            type="search"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search startups by name, technology, or capability..."
